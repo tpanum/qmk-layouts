@@ -1,4 +1,4 @@
 # tpanum layout for QMK firmware
 [This .hex-file](ergodox_ez_firmware_tpanum_colemak.hex) contains the layout for Ergodox EZ solution.
 
-It can be modified [here](https://configure.ergodox-ez.com/keyboard_layouts/xmyrve/edit)
+It can be modified [here](https://configure.ergodox-ez.com/layouts/Enyn/latest/0)
