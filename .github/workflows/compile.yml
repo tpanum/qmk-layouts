@@ -1,0 +1,52 @@
+name: Compile to .hex
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install QMK and dependencies
+        run: |
+          sudo apt-get install -y python3-pip git
+          python3 -m pip install --user qmk
+          qmk setup
+
+      - name: Prepare layouts
+        run: |
+          qmk config user.keymap=tpanum
+          qmk new-keymap -kb kinesis
+          qmk new-keymap -kb ergodox_ez
+
+          cp kinesis/keymap.c $HOMEqmk_firmware/keyboards/kinesis/keymaps/tpanum/
+          cp ergodox/keymap.c $HOME/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
+
+      - name: Compile layouts
+        run: |
+          qmk compile -kb ergodox_ez -km tpanum
+          qmk compile -kb kinesis -km tpanum
+
+      - name: Create release
+        id: latest_draft
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ steps.vars.outputs.release_name }}
+          body: ${{ steps.vars.outputs.release_info }}
+          draft: true
+      - name: Publish PDF in release
+        id: upload-latest-draft
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.latest_draft.outputs.upload_url }}
+          asset_path: "$HOME/qmk_firmware/.build/ergodox_ez_tpanum.hex"
+          asset_name: ${{ steps.vars.outputs.filename }}
+          asset_content_type: text/plain
