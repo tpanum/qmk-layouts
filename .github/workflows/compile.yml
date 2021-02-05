@@ -13,23 +13,32 @@ jobs:
       - name: Install QMK and dependencies
         run: |
           sudo apt-get install -y python3-pip git
+          pip3 install setuptools
           python3 -m pip install --user qmk
-          qmk setup
-
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Prepare layouts
         run: |
+          qmk setup -y
           qmk config user.keymap=tpanum
           qmk new-keymap -kb kinesis
           qmk new-keymap -kb ergodox_ez
 
-          cp kinesis/keymap.c $HOMEqmk_firmware/keyboards/kinesis/keymaps/tpanum/
-          cp ergodox/keymap.c $HOME/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
+          cp kinesis/keymap.c ~/qmk_firmware/keyboards/kinesis/keymaps/tpanum/
+          cp ergodox/keymap.c ~/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
 
       - name: Compile layouts
         run: |
           qmk compile -kb ergodox_ez -km tpanum
-          qmk compile -kb kinesis -km tpanum
+          qmk compile -kb kinesis/stapelberg -km tpanum
+          ls -lha ~/qmk_firmware/.build
+          cp ~/qmk_firmware/.build/*.hex .
 
+
+      - name: Define variables
+        id: vars
+        run: |
+          echo ::set-output name=release_name::$(TZ=Europe/Copenhagen date)
+          echo ::set-output name=release_info::$(git log --pretty=short -n 1)
       - name: Create release
         id: latest_draft
         uses: actions/create-release@master
@@ -40,13 +49,22 @@ jobs:
           release_name: ${{ steps.vars.outputs.release_name }}
           body: ${{ steps.vars.outputs.release_info }}
           draft: true
-      - name: Publish PDF in release
-        id: upload-latest-draft
+      - name: Publish Ergodox hex files
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.latest_draft.outputs.upload_url }}
-          asset_path: "$HOME/qmk_firmware/.build/ergodox_ez_tpanum.hex"
-          asset_name: ${{ steps.vars.outputs.filename }}
-          asset_content_type: text/plain
+          asset_path: "./ergodox_ez_tpanum.hex"
+          asset_name: "ergodox_ez_tpanum.hex"
+          asset_content_type: application/octet-stream
+
+      - name: Publish Kinesis hex files
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.latest_draft.outputs.upload_url }}
+          asset_path: "./kinesis_stapelberg_tpanum.hex"
+          asset_name: "kinesis_tpanum.hex"
+          asset_content_type: application/octet-stream
