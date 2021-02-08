@@ -23,7 +23,9 @@ jobs:
           qmk new-keymap -kb kinesis
           qmk new-keymap -kb ergodox_ez
 
+          cp config.h ~/qmk_firmware/keyboards/kinesis/keymaps/tpanum/
           cp kinesis/keymap.c ~/qmk_firmware/keyboards/kinesis/keymaps/tpanum/
+          cp config.h ~/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
           cp ergodox/keymap.c ~/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
 
       - name: Compile layouts
@@ -39,6 +41,8 @@ jobs:
         run: |
           echo ::set-output name=release_name::$(TZ=Europe/Copenhagen date)
           echo ::set-output name=release_info::$(git log --pretty=short -n 1)
+          echo ::set-output name=kinesis_filename::$(echo kinesis_$(git log --pretty=format:'%h' -n 1).hex)
+          echo ::set-output name=ergodox_filename::$(echo ergodox_$(git log --pretty=format:'%h' -n 1).hex)
       - name: Create release
         id: latest_draft
         uses: actions/create-release@master
@@ -56,7 +60,7 @@ jobs:
         with:
           upload_url: ${{ steps.latest_draft.outputs.upload_url }}
           asset_path: "./ergodox_ez_tpanum.hex"
-          asset_name: "ergodox_ez_tpanum.hex"
+          asset_name: ${{ steps.vars.outputs.ergodox_filename }}
           asset_content_type: application/octet-stream
 
       - name: Publish Kinesis hex files
@@ -66,5 +70,5 @@ jobs:
         with:
           upload_url: ${{ steps.latest_draft.outputs.upload_url }}
           asset_path: "./kinesis_stapelberg_tpanum.hex"
-          asset_name: "kinesis_tpanum.hex"
+          asset_name: ${{ steps.vars.outputs.kinesis_filename }}
           asset_content_type: application/octet-stream
