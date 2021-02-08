@@ -23,9 +23,7 @@ jobs:
           qmk new-keymap -kb kinesis
           qmk new-keymap -kb ergodox_ez
 
-          cp config.h ~/qmk_firmware/keyboards/kinesis/keymaps/tpanum/
           cp kinesis/keymap.c ~/qmk_firmware/keyboards/kinesis/keymaps/tpanum/
-          cp config.h ~/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
           cp ergodox/keymap.c ~/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
 
       - name: Compile layouts
