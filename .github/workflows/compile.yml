@@ -10,29 +10,8 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install QMK and dependencies
-        run: |
-          sudo apt-get install -y python3-pip git
-          pip3 install setuptools
-          python3 -m pip install --user qmk
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      - name: Prepare layouts
-        run: |
-          qmk setup -y
-          qmk config user.keymap=tpanum
-          qmk new-keymap -kb kinesis
-          qmk new-keymap -kb ergodox_ez
-
-          cp kinesis/keymap.c ~/qmk_firmware/keyboards/kinesis/keymaps/tpanum/
-          cp ergodox/keymap.c ~/qmk_firmware/keyboards/ergodox_ez/keymaps/tpanum/
-
       - name: Compile layouts
-        run: |
-          qmk compile -kb ergodox_ez -km tpanum
-          qmk compile -kb kinesis/stapelberg -km tpanum
-          ls -lha ~/qmk_firmware/.build
-          cp ~/qmk_firmware/.build/*.hex .
-
+        run: bash compile.sh
 
       - name: Define variables
         id: vars

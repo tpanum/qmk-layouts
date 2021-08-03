@@ -58,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	   _______,_______,_______,_______,_______,_______,_______,_______,_______,
            _______,_______,_______,_______,_______,_______,
            _______,KC_EXLM,KC_AT  ,KC_HASH,KC_DLR ,KC_PERC,
-           _______,KC_QUOT,KC_DQUO,KC_LCBR,KC_RCBR,KC_PEQL,
+           _______,KC_QUOT,KC_DQUO,KC_LCBR,KC_RCBR,KC_EQL,
            _______,KC_PIPE,KC_BSLS,_______,_______,KC_PPLS,
 	   _______,_______,_______,_______,
 	   _______,_______,
@@ -107,6 +107,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   case KC_LSFT:
     if (!record->event.pressed && last_keycode == keycode) {
       unregister_code(KC_LSFT);
+      wait_ms(20);
       register_code(KC_ESC);
       unregister_code(KC_ESC);
       return false;
