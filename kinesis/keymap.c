@@ -43,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	   KC_HOME,
 	   KC_SPC,LT(NUMS,KC_TAB),KC_LALT ,
 
-	   KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
+	   KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SCRL  ,KC_PAUS, XXXXXXX, QK_BOOTLOADER,
 	   KC_6   ,KC_7   ,KC_8   ,KC_9   ,KC_0   , KC_MINS,
 	   KC_J   ,KC_L   ,KC_U   ,KC_Y   ,KC_SCLN, KC_RCTL,
 	   KC_H   ,KC_N   ,KC_E   ,KC_I   ,KC_O   , KC_LSFT,

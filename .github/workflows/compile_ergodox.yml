@@ -1,0 +1,30 @@
+name: Compile to ergodox to .hex
+
+on:
+  push:
+    paths:
+      - "ergodox/keymap.c"
+      - "compile.sh"
+      - ".github/workflows/compile_ergodox.yml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Compile layouts
+        run: bash compile.sh
+      - name: Get release name
+        run: |
+          KEYBOARD="kinesis"
+          DATE_COMMIT_VERSION=$(git show -s --date short --format=format:%ad.%h)
+          echo "RELEASE_VERSION=${KEYBOARD}.${DATE_COMMIT_VERSION}" >> $GITHUB_ENV
+          RELEASE_FILE=${KEYBOARD}.tpanum.${DATE_COMMIT_VERSION}.hex
+          echo "RELEASE_FILE=$RELEASE_FILE" >> $GITHUB_ENV
+          mv ${KEYBOARD}_tpanum.hex $RELEASE_FILE
+      - name: Publish Ergodox hex files
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.RELEASE_VERSION }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          files: ${{ env.RELEASE_FILE }}
