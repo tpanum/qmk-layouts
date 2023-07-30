@@ -1,11 +1,13 @@
 name: Compile to kinesis to .hex
-
 on:
   push:
     paths:
       - "kinesis/keymap.c"
       - "compile.sh"
       - ".github/workflows/compile_kinesis.yml"
+
+permissions:
+  contents: write
 
 jobs:
   deploy:

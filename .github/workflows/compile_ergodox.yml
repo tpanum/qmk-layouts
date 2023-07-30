@@ -1,11 +1,13 @@
 name: Compile to ergodox to .hex
-
 on:
   push:
     paths:
       - "ergodox/keymap.c"
       - "compile.sh"
       - ".github/workflows/compile_ergodox.yml"
+
+permissions:
+  contents: write
 
 jobs:
   deploy:
