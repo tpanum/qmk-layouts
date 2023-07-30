@@ -10,15 +10,16 @@ permissions:
   contents: write
 
 jobs:
-  deploy:
+  compile:
     runs-on: ubuntu-latest
+    env:
+      KEYBOARD: kinesis
     steps:
       - uses: actions/checkout@v3
       - name: Compile layouts
         run: bash compile.sh
       - name: Get release name
         run: |
-          KEYBOARD="kinesis"
           DATE_COMMIT_VERSION=$(git show -s --date short --format=format:%ad.%h)
           echo "RELEASE_VERSION=${KEYBOARD}.${DATE_COMMIT_VERSION}" >> $GITHUB_ENV
           RELEASE_FILE=${KEYBOARD}.tpanum.${DATE_COMMIT_VERSION}.hex
