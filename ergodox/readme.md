@@ -1,10 +1,8 @@
-# tpanum layout for QMK firmware
-[This .hex-file](ergodox_ez_firmware_tpanum_colemak.hex) contains the layout for Ergodox EZ solution.
-
-It can be modified [here](https://configure.ergodox-ez.com/ergodox-ez/layouts/PMlAG/latest/0).
-
-## Flashing
+# Ergodox
+Installing the firmware can be done using the teensy-loader, with the following command:
 
 ``` shell
-teensy-loader-cli -w -v -mmcu=atmega32u4 ergodox_ez_firmware_tpanum_colemak.hex
+sudo teensy-loader-cli -w -v -mmcu=TEENSY2 ergodox.tpanum*.hex
 ```
+
+Now, press the reset button on the keyboard.
